@@ -8,3 +8,6 @@ A Cargo subcommand to ease navigation to the crates.io, documentation, home, and
 repository pages of a package."""
 homepage = "https://github.com/IvanUkhov/cargo-go"
 repository = "https://github.com/IvanUkhov/cargo-go"
+
+[dependencies]
+curl = "0.2"
