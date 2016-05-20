@@ -20,7 +20,9 @@ mod open;
 
 enum Destination {
     Crates,
+    Documentation,
     Homepage,
+    Repository,
     Unknown,
 }
 
@@ -37,9 +39,23 @@ fn run() -> Result<(), String> {
         Some((name, Destination::Crates)) => {
             format!("https://crates.io/crates/{}", name)
         },
+        Some((name, Destination::Documentation)) => {
+            match find::find("documentation", &try!(load::load(&name))) {
+                Some(path) => path,
+                _ => raise!("cannot find the documentation"),
+            }
+        },
         Some((name, Destination::Homepage)) => {
-            let _ = try!(load::load(&name));
-            format!("https://crates.io/crates/{}", name)
+            match find::find("homepage", &try!(load::load(&name))) {
+                Some(path) => path,
+                _ => raise!("cannot find the homepage"),
+            }
+        },
+        Some((name, Destination::Repository)) => {
+            match find::find("repository", &try!(load::load(&name))) {
+                Some(path) => path,
+                _ => raise!("cannot find the repository"),
+            }
         },
     };
      open::open(&path)
@@ -53,8 +69,10 @@ fn parse() -> Option<(String, Destination)> {
         _ => (args.remove(1), args.remove(1).to_lowercase()),
     };
     let destination = match &*destination {
-        "" | "crates" | "crates.io" => Destination::Crates,
-        "home" | "homepage" | "web" | "website" => Destination::Homepage,
+        "c" | "crate" | "crates" | "crates.io" | "" => Destination::Crates,
+        "d" | "doc" | "docs" | "documentation" => Destination::Documentation,
+        "h" | "home" | "homepage" | "page" | "web" | "website" => Destination::Homepage,
+        "r" | "git" | "rep" | "repository" => Destination::Repository,
         _ => Destination::Unknown,
     };
     Some((name, destination))
