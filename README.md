@@ -12,10 +12,10 @@ cargo install cargo-go
 ## Usage
 
 ```bash
-cargo go <crate>        # go to crates.io
-cargo go <crate> doc    # go to the documentation
-cargo go <crate> home   # go to the homepage
-cargo go <crate> repo   # go to the repository
+cargo go foo        # go to foo on crates.io
+cargo go foo doc    # go to foo’s documentation
+cargo go foo home   # go to foo’s homepage
+cargo go foo repo   # go to foo’s repository
 ```
 
 ## Contribution
