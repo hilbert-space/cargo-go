@@ -72,7 +72,7 @@ fn parse() -> Option<(String, Destination)> {
         "c" | "crate" | "crates" | "crates.io" | "" => Destination::Crates,
         "d" | "doc" | "docs" | "documentation" => Destination::Documentation,
         "h" | "home" | "homepage" | "page" | "web" | "website" => Destination::Homepage,
-        "r" | "git" | "rep" | "repository" => Destination::Repository,
+        "r" | "git" | "rep" | "repo" | "repository" => Destination::Repository,
         _ => Destination::Unknown,
     };
     Some((name, destination))
