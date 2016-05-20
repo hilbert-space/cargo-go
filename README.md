@@ -3,6 +3,21 @@
 A Cargo subcommand to ease navigation to the `crates.io`, documentation, home,
 and repository pages of a package.
 
+## Installation
+
+```bash
+cargo install cargo-go
+```
+
+## Usage
+
+```bash
+cargo go foo       # go to crates.io
+cargo go foo doc   # go to the documentation
+cargo go foo home  # go to the homepage
+cargo go foo repo  # go to the repository
+```
+
 ## Contribution
 
 Your contribution is highly appreciated. Do not hesitate to open an issue or a
