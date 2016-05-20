@@ -21,8 +21,7 @@ cargo go foo repo   # go to foo’s repository
 ## Recipes
 
 ```bash
-alias cgo='cargo go $(basename $PWD) repo'  # go to the repository of the
-                                            # current package
+alias cgo='cargo go $(basename $PWD) repo'  # go to the repository of the current package
 ```
 
 ## Contribution
