@@ -10,5 +10,5 @@ homepage = "https://github.com/IvanUkhov/cargo-go"
 repository = "https://github.com/IvanUkhov/cargo-go"
 
 [dependencies]
-hyper = "0.9.5"
-serde_json = "0.7.0"
+hyper = "0.9"
+serde_json = "0.7"
