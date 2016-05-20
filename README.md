@@ -1,7 +1,7 @@
 # Cargo Go
 
 A Cargo subcommand to ease navigation to the `crates.io`, documentation, home,
-and repository pages of a Cargo package.
+and repository pages of a package.
 
 ## Contribution
 
