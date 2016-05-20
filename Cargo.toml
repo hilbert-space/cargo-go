@@ -2,7 +2,10 @@
 name = "cargo-go"
 version = "0.1.0"
 license = "Apache-2.0/MIT"
-authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
+authors = [
+  "Christopher Serr <cryze92@gmail.com>",
+  "Ivan Ukhov <ivan.ukhov@gmail.com>",
+]
 description = """
 A Cargo subcommand to ease navigation to the crates.io, documentation, home, and
 repository pages of a package."""
