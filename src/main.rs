@@ -2,6 +2,13 @@ extern crate curl;
 
 use std::{env, process};
 
+macro_rules! ok(
+    ($result:expr) => (match $result {
+        Ok(result) => result,
+        Err(error) => raise!("{}", error),
+    });
+);
+
 macro_rules! raise(
     ($message:expr) => (return Err($message.into()));
     ($($argument:tt)*) => (raise!(format!($($argument)*)));
