@@ -1,6 +1,11 @@
-#[allow(dead_code)]
-pub fn find(_: &str, _: &str) -> Option<String> {
-    None
+use regex::Regex;
+
+pub fn find(key: &str, json: &str) -> Result<Option<String>, String> {
+    let pattern = ok!(Regex::new(&format!(r#""{}":"([^"]*)""#, key)));
+    match pattern.captures(json) {
+        Some(captures) => Ok(Some(captures.at(1).unwrap().into())),
+        _ => Ok(None),
+    }
 }
 
 #[cfg(test)]
@@ -9,6 +14,6 @@ mod tests {
 
     #[test]
     fn find() {
-        assert_eq!(super::find("homepage", RESPONSE), None);
+        assert_eq!(super::find("homepage", RESPONSE), Ok(Some("https://crates.io".into())));
     }
 }

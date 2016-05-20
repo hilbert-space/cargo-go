@@ -1,4 +1,5 @@
 extern crate curl;
+extern crate regex;
 
 use std::{env, process};
 
@@ -10,7 +11,7 @@ macro_rules! ok(
 );
 
 macro_rules! raise(
-    ($message:expr) => (return Err($message.into()));
+    ($message:expr) => (return Err(format!("{}", $message)));
     ($($argument:tt)*) => (raise!(format!($($argument)*)));
 );
 
@@ -40,19 +41,19 @@ fn run() -> Result<(), String> {
             format!("https://crates.io/crates/{}", name)
         },
         Some((name, Destination::Documentation)) => {
-            match find::find("documentation", &try!(load::load(&name))) {
+            match ok!(find::find("documentation", &try!(load::load(&name)))) {
                 Some(path) => path,
                 _ => raise!("cannot find the documentation"),
             }
         },
         Some((name, Destination::Homepage)) => {
-            match find::find("homepage", &try!(load::load(&name))) {
+            match ok!(find::find("homepage", &try!(load::load(&name)))) {
                 Some(path) => path,
                 _ => raise!("cannot find the homepage"),
             }
         },
         Some((name, Destination::Repository)) => {
-            match find::find("repository", &try!(load::load(&name))) {
+            match ok!(find::find("repository", &try!(load::load(&name)))) {
                 Some(path) => path,
                 _ => raise!("cannot find the repository"),
             }

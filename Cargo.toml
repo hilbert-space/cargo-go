@@ -11,3 +11,4 @@ repository = "https://github.com/IvanUkhov/cargo-go"
 
 [dependencies]
 curl = "0.2"
+regex = { default-features = false, version = "0.1" }

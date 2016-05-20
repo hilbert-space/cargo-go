@@ -1,6 +1,6 @@
 use curl::http;
 
-const BASE: &'static str = "https://crates.io/api/crates";
+const BASE: &'static str = "https://crates.io/api/v1/crates";
 
 pub fn load(name: &str) -> Result<String, String> {
     let path = format!("{}/{}", BASE, name);
