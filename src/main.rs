@@ -48,7 +48,7 @@ fn run() -> Result<(), String> {
         Some((name, Destination::Homepage)) => {
             match ok!(find::find("homepage", &try!(load::load(&name)))) {
                 Some(path) => path,
-                _ => raise!("cannot find the homepage"),
+                _ => raise!("cannot find the home page"),
             }
         },
         Some((name, Destination::Repository)) => {
