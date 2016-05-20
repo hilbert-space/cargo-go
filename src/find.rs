@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub fn find(_: &str, _: &str) -> Option<String> {
     None
 }
