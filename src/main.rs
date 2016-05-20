@@ -1,5 +1,6 @@
 use std::process;
 
+mod find;
 mod open;
 
 fn main() {
