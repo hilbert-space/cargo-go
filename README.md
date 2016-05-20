@@ -1,4 +1,4 @@
-# Cargo Go [![Version][version-img]][version-url] [![Status][status-img]][status-url]
+# Cargo Go [![Version][version-img]][version-url] [![Status][status1-img]][status1-url] [![Status][status2-img]][status2-url]
 
 A Cargo subcommand to ease navigation to the `crates.io`, documentation, home,
 and repository pages of a package.
@@ -30,7 +30,9 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[status-img]: https://travis-ci.org/IvanUkhov/cargo-go.svg?branch=master
-[status-url]: https://travis-ci.org/IvanUkhov/cargo-go
+[status1-img]: https://travis-ci.org/IvanUkhov/cargo-go.svg?branch=master
+[status1-url]: https://travis-ci.org/IvanUkhov/cargo-go
+[status2-img]: https://ci.appveyor.com/api/projects/status/j33t6axedga9c0t7?svg=true
+[status2-url]: https://ci.appveyor.com/project/IvanUkhov/cargo-go
 [version-img]: https://img.shields.io/crates/v/cargo-go.svg
 [version-url]: https://crates.io/crates/cargo-go
