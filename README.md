@@ -18,6 +18,13 @@ cargo go foo home   # go to foo’s home page
 cargo go foo repo   # go to foo’s repository
 ```
 
+## Recipes
+
+```bash
+alias cgo='cargo go $(basename $PWD) repo'  # go to the repository of the
+                                            # current package
+```
+
 ## Contribution
 
 Your contribution is highly appreciated. Do not hesitate to open an issue or a
