@@ -19,6 +19,8 @@ mod find;
 mod load;
 mod open;
 
+const BASE: &'static str = "https://crates.io/crates";
+
 enum Destination {
     Crates,
     Documentation,
@@ -36,9 +38,7 @@ fn main() {
 fn run() -> Result<(), String> {
     let path = match parse() {
         None | Some((_, Destination::Unknown)) => raise!("do not know where to go"),
-        Some((name, Destination::Crates)) => {
-            format!("https://crates.io/crates/{}", name)
-        },
+        Some((name, Destination::Crates)) => format!("{}/{}", BASE, name),
         Some((name, Destination::Documentation)) => {
             match ok!(find::find("documentation", &try!(load::load(&name)))) {
                 Some(path) => path,
@@ -58,7 +58,7 @@ fn run() -> Result<(), String> {
             }
         },
     };
-     open::open(&path)
+    open::open(&path)
 }
 
 fn parse() -> Option<(String, Destination)> {
@@ -69,7 +69,7 @@ fn parse() -> Option<(String, Destination)> {
         _ => (arguments.remove(2), arguments.remove(2).to_lowercase()),
     };
     let destination = match &*destination {
-        "c" | "crate" | "crates" | "crates.io" | "" => Destination::Crates,
+        "c" | "" | "crate" | "crates" | "crates.io" => Destination::Crates,
         "d" | "doc" | "docs" | "documentation" => Destination::Documentation,
         "h" | "home" | "homepage" | "page" | "web" | "website" => Destination::Homepage,
         "r" | "git" | "rep" | "repo" | "repository" => Destination::Repository,
