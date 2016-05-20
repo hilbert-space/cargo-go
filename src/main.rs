@@ -1,5 +1,5 @@
-extern crate curl;
-extern crate regex;
+extern crate hyper;
+extern crate serde_json;
 
 use std::env;
 
@@ -11,7 +11,7 @@ macro_rules! ok(
 );
 
 macro_rules! raise(
-    ($message:expr) => (return Err(format!("{}", $message)));
+    ($message:expr) => (return Err($message.to_string()));
     ($($argument:tt)*) => (raise!(format!($($argument)*)));
 );
 
