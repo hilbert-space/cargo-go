@@ -3,8 +3,15 @@
 
 use std::process::Command;
 
+pub fn open(path: &str) -> Result<(), String> {
+    match run(path) {
+        Ok(_) => Ok(()),
+        Err(_) => raise!("cannot go to {:?}", path),
+    }
+}
+
 #[cfg(not(any(target_os = "windows", target_os = "macos")))]
-pub fn open(path: &str) -> Result<&str, Vec<&str>> {
+fn run(path: &str) -> Result<&str, Vec<&str>> {
     use std::env;
 
     let mut methods = vec![];
@@ -24,7 +31,7 @@ pub fn open(path: &str) -> Result<&str, Vec<&str>> {
 }
 
 #[cfg(target_os = "macos")]
-pub fn open(path: &str) -> Result<&str, Vec<&str>> {
+fn run(path: &str) -> Result<&str, Vec<&str>> {
     match Command::new("open").arg(path).status() {
         Ok(_) => Ok("open"),
         Err(_) => Err(vec!["open"]),
@@ -32,7 +39,7 @@ pub fn open(path: &str) -> Result<&str, Vec<&str>> {
 }
 
 #[cfg(target_os = "windows")]
-pub fn open(path: &str) -> Result<&str, Vec<&str>> {
+fn run(path: &str) -> Result<&str, Vec<&str>> {
     match Command::new("cmd").arg("/C").arg("start").arg("").arg(path).status() {
         Ok(_) => Ok("cmd /C start"),
         Err(_) => Err(vec!["cmd /C start"]),

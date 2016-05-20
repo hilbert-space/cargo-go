@@ -1,4 +1,11 @@
+extern crate curl;
+
 use std::{env, process};
+
+macro_rules! raise(
+    ($message:expr) => (return Err($message.into()));
+    ($($argument:tt)*) => (raise!(format!($($argument)*)));
+);
 
 mod find;
 mod load;
@@ -6,17 +13,29 @@ mod open;
 
 enum Destination {
     Crates,
+    Homepage,
     Unknown,
 }
 
 fn main() {
-    let path = match parse() {
-        None | Some((_, Destination::Unknown)) => error("do not know where to go"),
-        Some((name, Destination::Crates)) => format!("https://crates.io/crates/{}", name),
-    };
-    if let Err(_) = open::open(&path) {
-        error(&format!("failed to go to {:?}", path));
+    if let Err(error) = run() {
+        println!("Error: {}.", error);
+        process::exit(1);
     }
+}
+
+fn run() -> Result<(), String> {
+    let path = match parse() {
+        None | Some((_, Destination::Unknown)) => raise!("do not know where to go"),
+        Some((name, Destination::Crates)) => {
+            format!("https://crates.io/crates/{}", name)
+        },
+        Some((name, Destination::Homepage)) => {
+            let _ = try!(load::load(&name));
+            format!("https://crates.io/crates/{}", name)
+        },
+    };
+     open::open(&path)
 }
 
 fn parse() -> Option<(String, Destination)> {
@@ -28,12 +47,8 @@ fn parse() -> Option<(String, Destination)> {
     };
     let destination = match &*destination {
         "" | "crates" | "crates.io" => Destination::Crates,
+        "home" | "homepage" | "web" | "website" => Destination::Homepage,
         _ => Destination::Unknown,
     };
     Some((name, destination))
-}
-
-fn error(message: &str) -> ! {
-    println!("Error: {}.", message);
-    process::exit(1);
 }
