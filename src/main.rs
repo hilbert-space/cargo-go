@@ -63,11 +63,11 @@ fn run() -> Result<(), String> {
 }
 
 fn parse() -> Option<(String, Destination)> {
-    let mut args = env::args().collect::<Vec<_>>();
-    let (name, destination) = match args.len() {
-        0 | 1 => return None,
-        2 => (args.remove(1), String::new()),
-        _ => (args.remove(1), args.remove(1).to_lowercase()),
+    let mut arguments = env::args().collect::<Vec<_>>();
+    let (name, destination) = match arguments.len() {
+        0...2 => return None,
+        3 => (arguments.remove(2), String::new()),
+        _ => (arguments.remove(2), arguments.remove(2).to_lowercase()),
     };
     let destination = match &*destination {
         "c" | "crate" | "crates" | "crates.io" | "" => Destination::Crates,
