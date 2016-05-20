@@ -1,11 +1,10 @@
-use serde_json::{from_str, Value};
+use serde_json::{Value, from_str};
 
 pub fn find(key: &str, json: &str) -> Result<Option<String>, String> {
-    let value: Value = ok!(from_str(json));
-    Ok(value.lookup("crate")
-            .and_then(|c| c.lookup(key))
-            .and_then(Value::as_string)
-            .map(ToOwned::to_owned))
+    Ok(ok!(from_str::<Value>(json)).lookup("crate")
+                                   .and_then(|c| c.lookup(key))
+                                   .and_then(Value::as_string)
+                                   .map(ToOwned::to_owned))
 }
 
 #[cfg(test)]
@@ -14,7 +13,6 @@ mod tests {
 
     #[test]
     fn find() {
-        assert_eq!(super::find("homepage", RESPONSE),
-                   Ok(Some("https://crates.io".into())));
+        assert_eq!(super::find("homepage", RESPONSE), Ok(Some("https://crates.io".into())));
     }
 }
