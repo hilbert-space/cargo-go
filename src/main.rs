@@ -1,7 +1,7 @@
 extern crate curl;
 extern crate regex;
 
-use std::{env, process};
+use std::env;
 
 macro_rules! ok(
     ($result:expr) => (match $result {
@@ -30,7 +30,6 @@ enum Destination {
 fn main() {
     if let Err(error) = run() {
         println!("Error: {}.", error);
-        process::exit(1);
     }
 }
 
