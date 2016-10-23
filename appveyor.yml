@@ -1,7 +1,5 @@
 environment:
   matrix:
-    - TARGET: i686-pc-windows-gnu
-    - TARGET: i686-pc-windows-msvc
     - TARGET: x86_64-pc-windows-gnu
     - TARGET: x86_64-pc-windows-msvc
 
@@ -11,7 +9,6 @@ install:
   - set CARGO_TARGET_DIR=%APPVEYOR_BUILD_FOLDER%\target
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - if NOT "%TARGET%" == "x86_64-pc-windows-msvc" rustup target add %TARGET%
-  - if "%TARGET%" == "i686-pc-windows-gnu" set PATH=C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
   - if "%TARGET%" == "x86_64-pc-windows-gnu" set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
   - rustc -vV
   - cargo -vV
