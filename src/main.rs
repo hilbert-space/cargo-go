@@ -1,5 +1,5 @@
-extern crate hyper;
-extern crate serde_json;
+extern crate curl;
+extern crate regex;
 
 use std::env;
 

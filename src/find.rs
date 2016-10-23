@@ -1,10 +1,11 @@
-use serde_json::{Value, from_str};
+use regex::Regex;
 
 pub fn find(key: &str, json: &str) -> Result<Option<String>, String> {
-    Ok(ok!(from_str::<Value>(json)).lookup("crate")
-                                   .and_then(|c| c.lookup(key))
-                                   .and_then(Value::as_string)
-                                   .map(ToOwned::to_owned))
+    let pattern = ok!(Regex::new(&format!(r#""{}":"([^"]*)""#, key)));
+    match pattern.captures(json) {
+        Some(captures) => Ok(Some(captures.at(1).unwrap().into())),
+        _ => Ok(None),
+    }
 }
 
 #[cfg(test)]
