@@ -1,20 +1,23 @@
 environment:
   matrix:
-    - TARGET: x86_64-pc-windows-gnu
-      BITS: 64
     - TARGET: i686-pc-windows-gnu
-      BITS: 32
+    - TARGET: i686-pc-windows-msvc
+    - TARGET: x86_64-pc-windows-gnu
+    - TARGET: x86_64-pc-windows-msvc
 
 install:
-  - ps: Start-FileDownload "https://static.rust-lang.org/dist/rust-nightly-${env:TARGET}.exe"
-  - rust-nightly-%TARGET%.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
-  - set PATH=%PATH%;C:\Program Files (x86)\Rust\bin;C:\msys64\mingw%BITS%\bin;C:\msys64\usr\bin
+  - curl -sSf -o rustup-init.exe https://win.rustup.rs
+  - rustup-init.exe -y --default-host x86_64-pc-windows-msvc
   - set CARGO_TARGET_DIR=%APPVEYOR_BUILD_FOLDER%\target
-  - rustc -V
-  - cargo -V
+  - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
+  - if NOT "%TARGET%" == "x86_64-pc-windows-msvc" rustup target add %TARGET%
+  - if "%TARGET%" == "i686-pc-windows-gnu" set PATH=C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
+  - if "%TARGET%" == "x86_64-pc-windows-gnu" set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+  - rustc -vV
+  - cargo -vV
 
 build: false
 
 test_script:
-  - cargo build --verbose
-  - cargo test --verbose
+  - cargo test --target %TARGET% --verbose
+  - cargo build --target %TARGET% --verbose
