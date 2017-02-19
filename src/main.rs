@@ -40,19 +40,19 @@ fn run() -> Result<(), String> {
         None | Some((_, Destination::Unknown)) => raise!("do not know where to go"),
         Some((name, Destination::Crates)) => format!("{}/{}", BASE, name),
         Some((name, Destination::Documentation)) => {
-            match ok!(find::find("documentation", &try!(load::load(&name)))) {
+            match ok!(find::find("documentation", &load::load(&name)?)) {
                 Some(path) => path,
                 _ => raise!("cannot find the documentation"),
             }
         },
         Some((name, Destination::Homepage)) => {
-            match ok!(find::find("homepage", &try!(load::load(&name)))) {
+            match ok!(find::find("homepage", &load::load(&name)?)) {
                 Some(path) => path,
                 _ => raise!("cannot find the home page"),
             }
         },
         Some((name, Destination::Repository)) => {
-            match ok!(find::find("repository", &try!(load::load(&name)))) {
+            match ok!(find::find("repository", &load::load(&name)?)) {
                 Some(path) => path,
                 _ => raise!("cannot find the repository"),
             }
