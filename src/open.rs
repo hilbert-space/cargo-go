@@ -40,7 +40,7 @@ fn run(path: &str) -> Result<&str, Vec<&str>> {
 
 #[cfg(target_os = "windows")]
 fn run(path: &str) -> Result<&str, Vec<&str>> {
-    match Command::new("cmd").arg("/C").arg("start").arg("").arg(path).status() {
+    match Command::new("cmd").arg("/C").arg("start").arg(path).status() {
         Ok(_) => Ok("cmd /C start"),
         Err(_) => Err(vec!["cmd /C start"]),
     }
