@@ -13,7 +13,7 @@ cargo install cargo-go
 
 ```bash
 cargo go foo        # go to foo on crates.io
-cargo go foo doc    # go to foo’s documentation
+cargo go foo docs   # go to foo’s documentation
 cargo go foo home   # go to foo’s home page
 cargo go foo repo   # go to foo’s repository
 ```
