@@ -2,10 +2,9 @@ use regex::Regex;
 
 pub fn find(key: &str, json: &str) -> Result<Option<String>, String> {
     let pattern = ok!(Regex::new(&format!(r#""{}":"([^"]*)""#, key)));
-    match pattern.captures(json) {
-        Some(captures) => Ok(Some(captures.at(1).unwrap().into())),
-        _ => Ok(None),
-    }
+    Ok(pattern.captures(json)
+              .and_then(|captures| captures.get(1))
+              .map(|_match| _match.as_str().into()))
 }
 
 #[cfg(test)]
