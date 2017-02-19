@@ -1,47 +1,38 @@
-// The code is borrowed from and should be kept in sync with:
-// https://github.com/rust-lang/cargo/blob/master/src/cargo/ops/cargo_doc.rs
-
-use std::process::Command;
+macro_rules! run(
+    ($name:expr, $path:expr) => ({
+        if ::std::process::Command::new($name).arg($path).status().is_ok() {
+            return true;
+        }
+    });
+);
 
 pub fn open(path: &str) -> Result<(), String> {
-    match run(path) {
-        Ok(_) => Ok(()),
-        Err(_) => raise!("cannot go to {:?}", path),
+    if run(path) {
+        return Ok(());
+    } else {
+        raise!("cannot go to {:?}", path);
     }
 }
 
 #[cfg(not(any(target_os = "windows", target_os = "macos")))]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
-    use std::env;
-
-    let mut methods = vec![];
-    if let Ok(name) = env::var("BROWSER") {
-        match Command::new(name).arg(path).status() {
-            Ok(_) => return Ok("$BROWSER"),
-            Err(_) => methods.push("$BROWSER"),
-        }
+fn run(path: &str) -> bool {
+    if let Ok(name) = ::std::env::var("BROWSER") {
+        run!(name, path);
     }
-    for method in ["xdg-open", "gnome-open", "kde-open"].iter() {
-        match Command::new(method).arg(path).status() {
-            Ok(_) => return Ok(method),
-            Err(_) => methods.push(method),
-        }
+    for name in ["xdg-open", "gnome-open", "kde-open"].iter() {
+        run!(name, path);
     }
-    Err(methods)
+    false
 }
 
 #[cfg(target_os = "macos")]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
-    match Command::new("open").arg(path).status() {
-        Ok(_) => Ok("open"),
-        Err(_) => Err(vec!["open"]),
-    }
+fn run(path: &str) -> bool {
+    run!("open", path);
+    false
 }
 
 #[cfg(target_os = "windows")]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
-    match Command::new("explorer").arg(path).status() {
-        Ok(_) => Ok("explorer"),
-        Err(_) => Err(vec!["explorer"]),
-    }
+fn run(path: &str) -> bool {
+    run!("explorer", path);
+    false
 }
