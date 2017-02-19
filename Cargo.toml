@@ -5,6 +5,7 @@ license = "Apache-2.0/MIT"
 authors = [
   "Christopher Serr <cryze92@gmail.com>",
   "Ivan Ukhov <ivan.ukhov@gmail.com>",
+  "pravic <ehysta@gmail.com>",
 ]
 description = """
 A Cargo subcommand to ease navigation to the crates.io, documentation, home, and
