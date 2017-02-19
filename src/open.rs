@@ -41,7 +41,7 @@ fn run(path: &str) -> Result<&str, Vec<&str>> {
 #[cfg(target_os = "windows")]
 fn run(path: &str) -> Result<&str, Vec<&str>> {
     match Command::new("explorer").arg(path).status() {
-        Ok(_) => Ok("cmd /C start"),
-        Err(_) => Err(vec!["cmd /C start"]),
+        Ok(_) => Ok("explorer"),
+        Err(_) => Err(vec!["explorer"]),
     }
 }
