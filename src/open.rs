@@ -11,10 +11,9 @@ pub fn open(path: &str) -> Result<(), String> {
 }
 
 #[cfg(not(any(target_os = "windows", target_os = "macos")))]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
+fn run(path: &str) -> Result<&'static str, Vec<&'static str>> {
     use std::env;
-
-    let mut methods = vec![];
+    let mut methods = Vec::new();
     if let Ok(name) = env::var("BROWSER") {
         match Command::new(name).arg(path).status() {
             Ok(_) => return Ok("$BROWSER"),
@@ -31,7 +30,7 @@ fn run(path: &str) -> Result<&str, Vec<&str>> {
 }
 
 #[cfg(target_os = "macos")]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
+fn run(path: &str) -> Result<&'static str, Vec<&'static str>> {
     match Command::new("open").arg(path).status() {
         Ok(_) => Ok("open"),
         Err(_) => Err(vec!["open"]),
@@ -39,9 +38,9 @@ fn run(path: &str) -> Result<&str, Vec<&str>> {
 }
 
 #[cfg(target_os = "windows")]
-fn run(path: &str) -> Result<&str, Vec<&str>> {
-    match Command::new("cmd").arg("/C").arg("start").arg(path).status() {
-        Ok(_) => Ok("cmd /C start"),
-        Err(_) => Err(vec!["cmd /C start"]),
+fn run(path: &str) -> Result<&'static str, Vec<&'static str>> {
+    match Command::new("cmd").arg("/C").arg(path).status() {
+        Ok(_) => Ok("cmd /C"),
+        Err(_) => Err(vec!["cmd /C"]),
     }
 }
