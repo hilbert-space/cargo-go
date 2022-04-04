@@ -1,3 +1,4 @@
+extern crate core;
 extern crate curl;
 extern crate regex;
 
@@ -15,11 +16,13 @@ macro_rules! raise(
     ($($argument:tt)*) => (raise!(format!($($argument)*)));
 );
 
+mod client;
 mod find;
 mod load;
 mod open;
+mod response;
 
-const BASE: &'static str = "https://crates.io/crates";
+const BASE: &str = "https://crates.io/crates";
 
 enum Destination {
     Crates,
@@ -44,19 +47,19 @@ fn run() -> Result<(), String> {
                 Some(path) => path,
                 _ => raise!("cannot find the documentation"),
             }
-        },
+        }
         Some((name, Destination::Homepage)) => {
             match ok!(find::find("homepage", &load::load(&name)?)) {
                 Some(path) => path,
                 _ => raise!("cannot find the home page"),
             }
-        },
+        }
         Some((name, Destination::Repository)) => {
             match ok!(find::find("repository", &load::load(&name)?)) {
                 Some(path) => path,
                 _ => raise!("cannot find the repository"),
             }
-        },
+        }
     };
     open::open(&path)
 }
@@ -64,7 +67,7 @@ fn run() -> Result<(), String> {
 fn parse() -> Option<(String, Destination)> {
     let mut arguments = env::args().collect::<Vec<_>>();
     let (name, destination) = match arguments.len() {
-        0...2 => return None,
+        0..=2 => return None,
         3 => (arguments.remove(2), String::new()),
         _ => (arguments.remove(2), arguments.remove(2).to_lowercase()),
     };

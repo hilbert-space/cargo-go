@@ -1,6 +1,7 @@
 use curl::easy::Easy;
+use crate::response::Response;
 
-const CRATES_URL: &'static str = "https://crates.io/api/v1/crates";
+const CRATES_URL: &str = "https://crates.io/api/v1/crates";
 
 pub fn load(name: &str) -> Result<String, String> {
     let url = format!("{}/{}", CRATES_URL, name);
@@ -17,4 +18,8 @@ pub fn load(name: &str) -> Result<String, String> {
         ok!(transfer.perform());
     }
     Ok(ok!(String::from_utf8(data)))
+}
+
+pub async fn new_load(name: &str) -> anyhow::Result<Response> {
+    let client = hyper::Client::builder().
 }
