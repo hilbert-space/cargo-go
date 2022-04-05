@@ -105,7 +105,7 @@ pub struct Version {
     #[serde(rename = "dl_path")]
     pub dl_path: String,
     pub downloads: i64,
-    pub features: Features,
+    pub features: Value,
     pub id: i64,
     pub license: Option<String>,
     pub links: Links2,
@@ -135,89 +135,6 @@ pub struct User {
     pub login: String,
     pub name: Option<String>,
     pub url: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Features {
-    #[serde(default)]
-    pub default: Vec<String>,
-    #[serde(default)]
-    pub fs: Vec<String>,
-    #[serde(default)]
-    pub full: Vec<String>,
-    #[serde(rename = "io-std")]
-    #[serde(default)]
-    pub io_std: Vec<String>,
-    #[serde(rename = "io-util")]
-    #[serde(default)]
-    pub io_util: Vec<String>,
-    #[serde(default)]
-    pub macros: Vec<String>,
-    #[serde(default)]
-    pub net: Vec<String>,
-    #[serde(default)]
-    pub process: Vec<String>,
-    #[serde(default)]
-    pub rt: Vec<String>,
-    #[serde(rename = "rt-multi-thread")]
-    pub rt_multi_thread: Option<Vec<String>>,
-    #[serde(default)]
-    pub signal: Vec<String>,
-    #[serde(default)]
-    pub stats: Vec<Value>,
-    #[serde(default)]
-    pub sync: Vec<String>,
-    #[serde(rename = "test-util")]
-    #[serde(default)]
-    pub test_util: Vec<String>,
-    #[serde(default)]
-    pub time: Vec<String>,
-    #[serde(default)]
-    pub stream: Vec<String>,
-    #[serde(default)]
-    pub blocking: Vec<String>,
-    #[serde(default)]
-    pub dns: Vec<String>,
-    #[serde(rename = "io-driver")]
-    pub io_driver: Option<Vec<String>>,
-    #[serde(rename = "rt-core")]
-    #[serde(default)]
-    pub rt_core: Vec<String>,
-    #[serde(rename = "rt-threaded")]
-    pub rt_threaded: Option<Vec<String>>,
-    #[serde(rename = "rt-util")]
-    #[serde(default)]
-    pub rt_util: Vec<Value>,
-    #[serde(default)]
-    pub tcp: Vec<String>,
-    #[serde(default)]
-    pub udp: Vec<String>,
-    #[serde(default)]
-    pub uds: Vec<String>,
-    #[serde(default)]
-    pub codec: Vec<String>,
-    #[serde(default)]
-    pub io: Vec<String>,
-    #[serde(rename = "rt-current-thread")]
-    pub rt_current_thread: Option<Vec<String>>,
-    #[serde(rename = "rt-full")]
-    #[serde(default)]
-    pub rt_full: Vec<String>,
-    #[serde(default)]
-    pub timer: Vec<String>,
-    #[serde(default)]
-    pub tracing: Vec<String>,
-    #[serde(default)]
-    pub reactor: Vec<String>,
-    #[serde(rename = "experimental-tracing")]
-    #[serde(default)]
-    pub experimental_tracing: Vec<String>,
-    #[serde(rename = "async-await-preview")]
-    #[serde(default)]
-    pub async_await_preview: Vec<String>,
-    #[serde(rename = "unstable-futures")]
-    pub unstable_futures: Option<Vec<String>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
