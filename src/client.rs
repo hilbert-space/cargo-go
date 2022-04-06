@@ -18,7 +18,7 @@ impl Client {
         let client = hyper::Client::builder().build(https);
         Self(client)
     }
-    pub async fn new_load(&self, name: &str) -> anyhow::Result<Response> {
+    pub async fn new_load(&self, name: &str) -> Result<Response> {
         let url = format!("{}/{}", CRATES_URL, name);
         let resp = self.0.get(url.parse()?).await?;
         Response::from_hyper(resp).await

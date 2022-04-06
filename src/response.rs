@@ -4,6 +4,8 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 
+const BASE: &str = "https://crates.io/crates";
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Response {
@@ -18,6 +20,15 @@ impl Response {
     pub async fn from_hyper(resp: hyper::Response<Body>) -> Result<Self> {
         let b = hyper::body::to_bytes(resp.into_body()).await?;
         serde_json::from_slice(b.as_ref()).context("Failed to deserialize")
+    }
+    pub fn homepage(&self) -> String {
+        self.crate_field.homepage.clone()
+    }
+    pub fn documentation(&self) -> String {
+        format!("https://docs.rs/{}", self.crate_field.name)
+    }
+    pub fn crates(&self) -> String {
+        format!("{BASE}/{}", self.crate_field.name)
     }
 }
 

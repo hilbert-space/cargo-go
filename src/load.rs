@@ -1,5 +1,6 @@
-use curl::easy::Easy;
 use crate::response::Response;
+use curl::easy::Easy;
+use hyper_rustls::HttpsConnectorBuilder;
 
 const CRATES_URL: &str = "https://crates.io/api/v1/crates";
 
@@ -21,5 +22,12 @@ pub fn load(name: &str) -> Result<String, String> {
 }
 
 pub async fn new_load(name: &str) -> anyhow::Result<Response> {
-    let client = hyper::Client::builder().
+    let https = HttpsConnectorBuilder::new()
+        .with_native_roots()
+        .https_only()
+        .enable_http2()
+        .build();
+    let client: hyper::Client<_, hyper::Body> = hyper::Client::builder().build(https);
+    let url = format!("{}/{}", CRATES_URL, name);
+    Response::from_hyper(client.get(url.parse()?).await?).await
 }
