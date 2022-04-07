@@ -25,6 +25,9 @@ impl Response {
         self.crate_field.homepage.clone()
     }
     pub fn documentation(&self) -> String {
+        if let Some(s) = self.crate_field.documentation.as_str() {
+            return s.to_string();
+        }
         format!("https://docs.rs/{}", self.crate_field.name)
     }
     pub fn crates(&self) -> String {

@@ -1,6 +1,6 @@
 macro_rules! run(
     ($name:expr, $path:expr) => ({
-        if ::std::process::Command::new($name).arg($path).status().is_ok() {
+        if ::std::process::Command::new($name).arg($path).spawn().is_ok() {
             return true;
         }
     });
