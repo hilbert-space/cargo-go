@@ -1,9 +1,11 @@
 extern crate core;
 extern crate curl;
 extern crate regex;
+#[macro_use] extern crate log;
 use crate::client::Client;
 use anyhow::{anyhow, Context};
 use clap::Parser;
+use log::LevelFilter;
 // use std::env;
 
 macro_rules! ok(
@@ -33,10 +35,10 @@ enum Destination {
     Repository,
 }
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
+fn main() -> anyhow::Result<()> {
+    pretty_env_logger::try_init()?;
     let args = Go::try_parse()?;
-    args.run().await?;
+    args.run()?;
     Ok(())
 }
 
@@ -77,9 +79,9 @@ struct Go {
 }
 
 impl Go {
-    pub async fn run(self) -> anyhow::Result<()> {
-        let client = Client::new();
-        let rel = client.new_load(&self.name).await?;
+    pub fn run(self) -> anyhow::Result<()> {
+        let client = Client::new()?;
+        let rel = client.new_load(&self.name)?;
         let url = match self.destination {
             Destination::Crates => rel.crates(),
             Destination::Documentation => rel.documentation(),
