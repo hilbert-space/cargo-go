@@ -1,5 +1,3 @@
-use anyhow::{Context, Result};
-use hyper::Body;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -17,10 +15,6 @@ pub struct Response {
 }
 
 impl Response {
-    pub async fn from_hyper(resp: hyper::Response<Body>) -> Result<Self> {
-        let b = hyper::body::to_bytes(resp.into_body()).await?;
-        serde_json::from_slice(b.as_ref()).context("Failed to deserialize")
-    }
     pub fn homepage(&self) -> String {
         self.crate_field.homepage.clone()
     }
