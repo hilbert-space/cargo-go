@@ -2,7 +2,8 @@ extern crate core;
 #[macro_use]
 extern crate log;
 use crate::client::Client;
-use anyhow::anyhow;
+use clap::AppSettings;
+use clap::ArgEnum;
 use clap::Parser;
 use std::fmt;
 use std::fmt::Formatter;
@@ -10,11 +11,15 @@ use std::fmt::Formatter;
 mod client;
 mod response;
 
-#[derive(Debug)]
+#[derive(Debug, ArgEnum, Clone)]
 enum Destination {
+    #[clap(aliases(["c", "", "crate", "crates", "crates.io"]))]
     Crates,
+    #[clap(aliases(["d", "doc", "docs", "documentation"]))]
     Documentation,
+    #[clap(aliases(["h", "home", "homepage", "page", "web", "website"]))]
     Homepage,
+    #[clap(aliases(["r", "git", "rep", "repo", "repository"]))]
     Repository,
 }
 
@@ -37,8 +42,9 @@ fn main() -> anyhow::Result<()> {
 }
 
 #[derive(Parser)]
+#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 struct Go {
-    #[clap(parse(try_from_str = parse_dest))]
+    #[clap(arg_enum)]
     destination: Destination,
     name: String,
 }
@@ -73,15 +79,4 @@ impl Go {
             Ok(())
         }
     }
-}
-
-fn parse_dest(input: &str) -> anyhow::Result<Destination> {
-    let destination = match input {
-        "c" | "" | "crate" | "crates" | "crates.io" => Destination::Crates,
-        "d" | "doc" | "docs" | "documentation" => Destination::Documentation,
-        "h" | "home" | "homepage" | "page" | "web" | "website" => Destination::Homepage,
-        "r" | "git" | "rep" | "repo" | "repository" => Destination::Repository,
-        _ => return Err(anyhow!("Wrong destination")),
-    };
-    Ok(destination)
 }
