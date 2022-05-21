@@ -2,9 +2,12 @@ extern crate core;
 #[macro_use]
 extern crate log;
 use crate::client::Client;
+use anyhow::anyhow;
 use clap::AppSettings;
 use clap::ArgEnum;
+
 use clap::Parser;
+
 use std::fmt;
 use std::fmt::Formatter;
 
@@ -35,6 +38,7 @@ impl fmt::Display for Destination {
 }
 
 fn main() -> anyhow::Result<()> {
+    human_panic::setup_panic!();
     pretty_env_logger::try_init()?;
     let args = Go::try_parse()?;
     args.run()?;
@@ -64,7 +68,13 @@ impl Go {
             }
             Destination::Homepage => {
                 paris::info!("Opening homepage for: {}", self.name);
-                rel.homepage()
+                match rel.homepage() {
+                    Some(s) => s,
+                    None => {
+                        paris::error!("No homepage found for: {}", self.name);
+                        return Err(anyhow!("No homepage found"));
+                    }
+                }
             }
             Destination::Repository => {
                 paris::info!("Opening the repository: {}", self.name);

@@ -15,7 +15,7 @@ pub struct Response {
 }
 
 impl Response {
-    pub fn homepage(&self) -> String {
+    pub fn homepage(&self) -> Option<String> {
         self.crate_field.homepage.clone()
     }
     pub fn documentation(&self) -> String {
@@ -54,7 +54,7 @@ pub struct Crate {
     pub downloads: i64,
     #[serde(rename = "exact_match")]
     pub exact_match: bool,
-    pub homepage: String,
+    pub homepage: Option<String>,
     pub id: String,
     pub keywords: Vec<String>,
     pub links: Links,
