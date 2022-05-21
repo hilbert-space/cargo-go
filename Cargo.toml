@@ -26,9 +26,6 @@ pretty_env_logger = "0.4.0"
 serde_path_to_error = "0.1.7"
 human-panic = "1.0.3"
 clap-verbosity-flag = "1.0.0"
-clap_complete = "3.1.4"
-clap_complete_fig = "3.1.5"
-clap_complete_command = "0.3.3"
 
 [dependencies.paris]
 version = "1.5.11"

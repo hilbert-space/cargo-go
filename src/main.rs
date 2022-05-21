@@ -8,6 +8,8 @@ use clap::ArgEnum;
 
 use clap::Parser;
 
+use clap_verbosity_flag::{ErrorLevel, Verbosity};
+
 use std::fmt;
 use std::fmt::Formatter;
 
@@ -39,8 +41,10 @@ impl fmt::Display for Destination {
 
 fn main() -> anyhow::Result<()> {
     human_panic::setup_panic!();
-    pretty_env_logger::try_init()?;
-    let args = Go::try_parse()?;
+    let args: Go = Go::try_parse()?;
+    pretty_env_logger::formatted_builder()
+        .filter_level(args.verbose.log_level_filter())
+        .try_init()?;
     args.run()?;
     Ok(())
 }
@@ -51,6 +55,8 @@ struct Go {
     #[clap(arg_enum)]
     destination: Destination,
     name: String,
+    #[clap(flatten)]
+    verbose: Verbosity<ErrorLevel>,
 }
 
 impl Go {
