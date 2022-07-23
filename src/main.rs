@@ -1,79 +1,98 @@
-extern crate curl;
-extern crate regex;
+extern crate core;
+#[macro_use]
+extern crate log;
+use crate::client::Client;
+use anyhow::anyhow;
+use clap::AppSettings;
+use clap::ArgEnum;
 
-use std::env;
+use clap::Parser;
 
-macro_rules! ok(
-    ($result:expr) => (match $result {
-        Ok(result) => result,
-        Err(error) => raise!("{}", error),
-    });
-);
+use clap_verbosity_flag::{ErrorLevel, Verbosity};
 
-macro_rules! raise(
-    ($message:expr) => (return Err($message.to_string()));
-    ($($argument:tt)*) => (raise!(format!($($argument)*)));
-);
+use std::fmt;
+use std::fmt::Formatter;
 
-mod find;
-mod load;
-mod open;
+mod client;
+mod response;
 
-const BASE: &'static str = "https://crates.io/crates";
-
+#[derive(Debug, ArgEnum, Clone)]
 enum Destination {
+    #[clap(aliases(["c", "", "crate", "crates", "crates.io"]))]
     Crates,
+    #[clap(aliases(["d", "doc", "docs", "documentation"]))]
     Documentation,
+    #[clap(aliases(["h", "home", "homepage", "page", "web", "website"]))]
     Homepage,
+    #[clap(aliases(["r", "git", "rep", "repo", "repository"]))]
     Repository,
-    Unknown,
 }
 
-fn main() {
-    if let Err(error) = run() {
-        println!("Error: {}.", error);
+impl fmt::Display for Destination {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            Destination::Crates => write!(f, "Crates.io page"),
+            Destination::Documentation => write!(f, "Documentation page"),
+            Destination::Homepage => write!(f, "Homepage"),
+            Destination::Repository => write!(f, "Repository"),
+        }
     }
 }
 
-fn run() -> Result<(), String> {
-    let path = match parse() {
-        None | Some((_, Destination::Unknown)) => raise!("do not know where to go"),
-        Some((name, Destination::Crates)) => format!("{}/{}", BASE, name),
-        Some((name, Destination::Documentation)) => {
-            match ok!(find::find("documentation", &load::load(&name)?)) {
-                Some(path) => path,
-                _ => raise!("cannot find the documentation"),
-            }
-        },
-        Some((name, Destination::Homepage)) => {
-            match ok!(find::find("homepage", &load::load(&name)?)) {
-                Some(path) => path,
-                _ => raise!("cannot find the home page"),
-            }
-        },
-        Some((name, Destination::Repository)) => {
-            match ok!(find::find("repository", &load::load(&name)?)) {
-                Some(path) => path,
-                _ => raise!("cannot find the repository"),
-            }
-        },
-    };
-    open::open(&path)
+fn main() -> anyhow::Result<()> {
+    human_panic::setup_panic!();
+    let args: Go = Go::try_parse()?;
+    pretty_env_logger::formatted_builder()
+        .filter_level(args.verbose.log_level_filter())
+        .try_init()?;
+    args.run()?;
+    Ok(())
 }
 
-fn parse() -> Option<(String, Destination)> {
-    let mut arguments = env::args().collect::<Vec<_>>();
-    let (name, destination) = match arguments.len() {
-        0...2 => return None,
-        3 => (arguments.remove(2), String::new()),
-        _ => (arguments.remove(2), arguments.remove(2).to_lowercase()),
-    };
-    let destination = match &*destination {
-        "c" | "" | "crate" | "crates" | "crates.io" => Destination::Crates,
-        "d" | "doc" | "docs" | "documentation" => Destination::Documentation,
-        "h" | "home" | "homepage" | "page" | "web" | "website" => Destination::Homepage,
-        "r" | "git" | "rep" | "repo" | "repository" => Destination::Repository,
-        _ => Destination::Unknown,
-    };
-    Some((name, destination))
+#[derive(Parser)]
+#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
+struct Go {
+    #[clap(arg_enum)]
+    destination: Destination,
+    name: String,
+    #[clap(flatten)]
+    verbose: Verbosity<ErrorLevel>,
+}
+
+impl Go {
+    pub fn run(self) -> anyhow::Result<()> {
+        let client = Client::new()?;
+        let rel = client.new_load(&self.name)?;
+        let url = match self.destination {
+            Destination::Crates => {
+                paris::info!("Opening crates page for: {}", self.name);
+                rel.crates()
+            }
+            Destination::Documentation => {
+                paris::info!("Opening docs page for: {}", self.name);
+                rel.documentation()
+            }
+            Destination::Homepage => {
+                paris::info!("Opening homepage for: {}", self.name);
+                match rel.homepage() {
+                    Some(s) => s,
+                    None => {
+                        paris::error!("No homepage found for: {}", self.name);
+                        return Err(anyhow!("No homepage found"));
+                    }
+                }
+            }
+            Destination::Repository => {
+                paris::info!("Opening the repository: {}", self.name);
+                rel.crate_field.repository
+            }
+        };
+        if let Err(e) = webbrowser::open(&url) {
+            paris::error!("Failed to open the browser on {} due to {}", url, e);
+            Err(e.into())
+        } else {
+            paris::success!("Opened the {} for {}", self.destination, self.name);
+            Ok(())
+        }
+    }
 }
