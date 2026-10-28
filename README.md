@@ -9,6 +9,13 @@ and repository pages of a package.
 cargo install cargo-go
 ```
 
+Prebuilt binaries are also available through
+[`cargo-binstall`](https://github.com/cargo-bins/cargo-binstall):
+
+```bash
+cargo binstall cargo-go
+```
+
 ## Usage
 
 ```bash
@@ -45,6 +52,14 @@ Add a short doc comment to every function and other item so this check passes.
 Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
+
+## Releasing
+
+To publish a release, update the version in `Cargo.toml` and run the **Release**
+workflow manually from the commit to release. The workflow publishes the crate
+to crates.io and attaches Linux, macOS, and Windows binaries to the matching
+GitHub Release. Configure a repository Actions secret named
+`CARGO_REGISTRY_TOKEN` with a crates.io publish token before running it.
 
 [ci-img]: https://github.com/IvanUkhov/cargo-go/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/IvanUkhov/cargo-go/actions/workflows/ci.yml

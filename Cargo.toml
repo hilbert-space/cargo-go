@@ -17,6 +17,11 @@ categories = ["command-line-utilities", "development-tools"]
 keywords = ["cargo"]
 edition = "2021"
 
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-{ target }-v{ version }{ archive-suffix }"
+bin-dir = "{ name }-{ target }-v{ version }/{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
 [dependencies]
 anyhow = "1.0.56"
 serde_json = "1.0.79"
@@ -45,4 +50,3 @@ features = ["serde_derive"]
 [dependencies.clap]
 version = "3.1.8"
 features = ["unicode", "derive", "wrap_help", "cargo"]
-
