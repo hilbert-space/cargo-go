@@ -21,6 +21,7 @@ mod client;
 mod response;
 
 #[derive(Debug, ArgEnum, Clone)]
+/// Supported crate pages to open.
 enum Destination {
     /// Open the crate's crates.io page.
     #[clap(aliases(["c", "", "crate", "crates", "crates.io"]))]
@@ -61,6 +62,7 @@ fn main() -> anyhow::Result<()> {
 
 #[derive(Parser)]
 #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
+/// Parsed command-line arguments.
 struct Go {
     /// Page to open for the package.
     #[clap(arg_enum)]

@@ -2,6 +2,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 
+/// Base URL for crate pages on crates.io.
 const BASE: &str = "https://crates.io/crates";
 
 /// Crates.io search result containing crate metadata and related records.

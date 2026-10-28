@@ -3,6 +3,7 @@ use anyhow::Result;
 
 use reqwest::header::HeaderMap;
 
+/// Base URL for the crates.io crate API.
 const CRATES_URL: &str = "https://crates.io/api/v1/crates";
 
 /// Blocking HTTP client for crates.io.
