@@ -20,17 +20,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install stable Rust
+        run: rustup toolchain install stable --profile minimal
       - name: Build and package binary
         shell: bash
         run: |
           VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
-          TARGET=$(rustc -vV | sed -n 's/^host: //p')
+          TARGET=$(rustc +stable -vV | sed -n 's/^host: //p')
           BINARY="cargo-go"
           if [[ "$TARGET" == *windows* ]]; then
             BINARY="${BINARY}.exe"
           fi
 
-          cargo build --locked --release --target "$TARGET"
+          cargo +stable build --release --target "$TARGET"
 
           PACKAGE_DIR="cargo-go-${TARGET}-v${VERSION}"
           mkdir -p "dist" "stage/${PACKAGE_DIR}"
@@ -43,8 +45,22 @@ jobs:
           if-no-files-found: error
 
   publish:
-    name: Publish crate and release binaries
+    name: Publish crate to crates.io
     needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish crate
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  release:
+    name: Create GitHub Release
+    needs: [build, publish]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -56,10 +72,6 @@ jobs:
           pattern: binaries-*
           path: dist
           merge-multiple: true
-      - name: Publish crate
-        run: cargo publish --locked
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
