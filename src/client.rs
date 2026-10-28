@@ -5,9 +5,11 @@ use reqwest::header::HeaderMap;
 
 const CRATES_URL: &str = "https://crates.io/api/v1/crates";
 
+/// Blocking HTTP client for crates.io.
 pub struct Client(reqwest::blocking::Client);
 
 impl Client {
+    /// Creates an HTTP client with the application's user agent.
     pub fn new() -> Result<Self> {
         let mut heads = HeaderMap::new();
         heads.insert("User-Agent", "cargo-go".parse()?);
@@ -16,6 +18,8 @@ impl Client {
             .build()?;
         Ok(Self(client))
     }
+
+    /// Fetches and deserializes metadata for a crate by name.
     pub fn new_load(&self, name: &str) -> Result<Response> {
         let url = format!("{}/{}", CRATES_URL, name);
         let res = self.0.get(url).send()?;

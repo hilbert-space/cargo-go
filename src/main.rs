@@ -1,3 +1,5 @@
+#![deny(clippy::missing_docs_in_private_items)]
+
 extern crate core;
 #[macro_use]
 extern crate log;
@@ -13,22 +15,29 @@ use clap_verbosity_flag::{ErrorLevel, Verbosity};
 use std::fmt;
 use std::fmt::Formatter;
 
+/// HTTP access to crates.io.
 mod client;
+/// Crates.io response models and page URLs.
 mod response;
 
 #[derive(Debug, ArgEnum, Clone)]
 enum Destination {
+    /// Open the crate's crates.io page.
     #[clap(aliases(["c", "", "crate", "crates", "crates.io"]))]
     Crates,
+    /// Open the crate's documentation page.
     #[clap(aliases(["d", "doc", "docs", "documentation"]))]
     Documentation,
+    /// Open the crate's homepage.
     #[clap(aliases(["h", "home", "homepage", "page", "web", "website"]))]
     Homepage,
+    /// Open the crate's source repository.
     #[clap(aliases(["r", "git", "rep", "repo", "repository"]))]
     Repository,
 }
 
 impl fmt::Display for Destination {
+    /// Formats the destination for user-facing messages.
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Destination::Crates => write!(f, "Crates.io page"),
@@ -39,6 +48,7 @@ impl fmt::Display for Destination {
     }
 }
 
+/// Parses arguments and runs the command-line application.
 fn main() -> anyhow::Result<()> {
     human_panic::setup_panic!();
     let args: Go = Go::try_parse()?;
@@ -52,14 +62,18 @@ fn main() -> anyhow::Result<()> {
 #[derive(Parser)]
 #[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 struct Go {
+    /// Page to open for the package.
     #[clap(arg_enum)]
     destination: Destination,
+    /// Crate name to look up.
     name: String,
+    /// Controls the amount of command output.
     #[clap(flatten)]
     verbose: Verbosity<ErrorLevel>,
 }
 
 impl Go {
+    /// Looks up the crate and opens the selected page.
     pub fn run(self) -> anyhow::Result<()> {
         let client = Client::new()?;
         let rel = client.new_load(&self.name)?;

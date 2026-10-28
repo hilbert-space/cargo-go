@@ -1,4 +1,4 @@
-# Cargo Go [![Version][version-img]][version-url] [![Status][status1-img]][status1-url] [![Status][status2-img]][status2-url]
+# Cargo Go [![Version][version-img]][version-url] [![CI][ci-img]][ci-url]
 
 A Cargo subcommand to ease navigation to the `crates.io`, documentation, home,
 and repository pages of a package.
@@ -12,17 +12,33 @@ cargo install cargo-go
 ## Usage
 
 ```bash
-cargo go foo        # go to foo on crates.io
-cargo go foo docs   # go to foo’s documentation
-cargo go foo home   # go to foo’s home page
-cargo go foo repo   # go to foo’s repository
+cargo go crates foo        # go to foo on crates.io
+cargo go docs foo          # go to foo’s documentation
+cargo go home foo          # go to foo’s home page
+cargo go repo foo          # go to foo’s repository
 ```
+
+The destination comes before the package name. Each command opens the selected
+page in your browser.
 
 ## Recipes
 
 ```bash
-alias cgo='cargo go $(basename ${PWD}) repo'  # go to the repository of the current package
+alias cgo='cargo go repo "$(basename "${PWD}")"'  # go to the repository of the current package
 ```
+
+## Development
+
+Build and test the project locally with:
+
+```bash
+cargo build
+cargo test
+cargo clippy --all-targets
+```
+
+Clippy denies missing documentation for private items as well as public ones.
+Add a short doc comment to every function and other item so this check passes.
 
 ## Contribution
 
@@ -30,9 +46,7 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[status1-img]: https://travis-ci.org/IvanUkhov/cargo-go.svg?branch=master
-[status1-url]: https://travis-ci.org/IvanUkhov/cargo-go
-[status2-img]: https://ci.appveyor.com/api/projects/status/j33t6axedga9c0t7?svg=true
-[status2-url]: https://ci.appveyor.com/project/IvanUkhov/cargo-go
+[ci-img]: https://github.com/IvanUkhov/cargo-go/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/IvanUkhov/cargo-go/actions/workflows/ci.yml
 [version-img]: https://img.shields.io/crates/v/cargo-go.svg
 [version-url]: https://crates.io/crates/cargo-go

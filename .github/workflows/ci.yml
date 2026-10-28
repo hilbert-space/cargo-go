@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            toolchain: stable
+          - os: ubuntu-latest
+            toolchain: beta
+          - os: ubuntu-latest
+            toolchain: nightly
+          - os: macos-latest
+            toolchain: stable
+          - os: macos-latest
+            toolchain: beta
+          - os: macos-latest
+            toolchain: nightly
+          - os: windows-latest
+            toolchain: stable
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal
+      - name: Build
+        run: cargo +${{ matrix.toolchain }} build --verbose
+      - name: Test
+        run: cargo +${{ matrix.toolchain }} test --verbose
+      - name: Check documentation lint
+        run: cargo +${{ matrix.toolchain }} clippy --all-targets -- -D clippy::missing_docs_in_private_items
